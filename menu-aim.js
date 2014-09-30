@@ -174,7 +174,7 @@
 	menuAimModule = function() {
 		var DELAY, MOUSE_LOCS_TRACKED,
 		activeRow, lastDelayLoc, mouseLocs, menu, options, timeoutId,
-		activate, activationDelay, clickRow, mouseenterRow, mouseenterMenu, mouseleaveMenu, mouseleaveRow, mousemoveDocument,
+		activate, activationDelay, attachEvents, clickRow, mouseenterRow, mouseenterMenu, mouseleaveMenu, mouseleaveRow, mousemoveDocument,
 		possiblyActivate, mouseMoveTrackerOff, mouseMoveTrackerOn;
 
 		lastDelayLoc = null;
@@ -201,16 +201,26 @@
 		 * Hook up initial menu events
 		 */
 		this.init = function( menuToHandle, opts ) {
-			var i, j, rows, rowSelector;
+			var i, menusCount;
 
-			menu = menuToHandle;
 			options = utils.extend(options, opts);
 			activeRow = options.activeRow;
+			menusCount = menuToHandle.length;
+
+			for (i=0; i<menusCount; i++) {
+				attachEvents(menuToHandle[i]);
+			}
+
+			return this;
+		};
+
+		attachEvents = function(menu) {
+			var i, j, rows, rowSelector;
 
 			menu.addEventListener( "mouseleave", mouseleaveMenu );
 			menu.addEventListener( "mouseenter", mouseenterMenu );
 
-			rowSelector = ( menu.id ? "#" + menu.id  : menu.nodeName ) + " " + options.rowSelector
+			rowSelector = ( menu.id ? "#" + menu.id  : menu.nodeName ) + " " + options.rowSelector;
 			rows = menu.querySelectorAll( rowSelector );
 
 			for (i = 0, j = rows.length; i < j; ++i) {
@@ -218,9 +228,7 @@
 				rows[i].addEventListener( "mouseleave", mouseleaveRow );
 				rows[i].addEventListener( "click", clickRow );
 			}
-
-			return this;
-		};
+		}
 
 		/**
 		 * Tracking of mouse pointer - shared between instances. And bound just one for all instances.
