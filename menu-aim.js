@@ -228,6 +228,13 @@
 		};
 
 		/**
+		 * Resets active row to initial state - active row set in menu AIM constructor options
+		 */
+		this.resetActiveRow = function() {
+			activeRow = options.activeRow;
+		};
+
+		/**
 		 * Tracking of mouse pointer - shared between instances. And bound just one for all instances.
 		 * Only for devices without touchscreen.
 		 */
@@ -305,26 +312,29 @@
 			options.exit(this);
 		};
 
-		/*
+		/**
 		 * Immediately activate a row if the user clicks on it.
+		 * @param {Event} event
 		 */
-		clickRow = function() {
-			activate(this);
+		clickRow = function(event) {
+			activate(this, event);
 		};
 
 		/**
 		 * Activate a menu row.
+		 * @oaram {Element} row - menu row that triggered the event
+		 * @param {Event=} event - click event from clickRow handler
 		 */
-		activate = function(row) {
+		activate = function(row, event) {
 			if (row == activeRow) {
 				return;
 			}
 
 			if (activeRow) {
-				options.deactivate(activeRow);
+				options.deactivate(activeRow, event);
 			}
 
-			options.activate(row);
+			options.activate(row, event);
 			activeRow = row;
 		};
 
